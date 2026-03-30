@@ -1,0 +1,31 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pandoc \"C:\\\\Users\\\\Surbhi\\\\Downloads\\\\whatsapp_saas_developer_brief.docx\" -o /tmp/whatsapp_brief.md)",
+      "Bash(python \"C:/Users/Surbhi/AppData/Roaming/Claude/local-agent-mode-sessions/skills-plugin/a02b6e0f-c6e0-4b77-8e94-b2189d3aaa8b/e3c9f98b-f873-4717-bc76-16827f9e1503/skills/docx/scripts/office/unpack.py\" \"C:\\\\Users\\\\Surbhi\\\\Downloads\\\\whatsapp_saas_developer_brief.docx\" /tmp/whatsapp_brief_unpacked/)",
+      "Bash(pip install:*)",
+      "Read(//tmp/**)",
+      "Read(//c/tmp/**)",
+      "Read(//c/Users/Surbhi/AppData/Local/Temp/whatsapp_brief_unpacked/**)",
+      "Bash(python -c \"import tempfile; print\\(tempfile.gettempdir\\(\\)\\)\")",
+      "Bash(php -v)",
+      "Bash(composer --version)",
+      "Bash(npm -v)",
+      "Bash(composer create-project:*)",
+      "Bash(cp -r whatsapp-temp/* whatsapp/)",
+      "Bash(cp whatsapp-temp/.* whatsapp/)",
+      "Bash(rm -rf whatsapp-temp)",
+      "Bash(composer require:*)",
+      "Bash(php artisan:*)",
+      "Bash(npm install:*)",
+      "Bash(mysql -u root -e \"CREATE DATABASE IF NOT EXISTS whatsapp_monks CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;\")",
+      "Bash(\"C:/wamp64/bin/mysql/mysql8.3.0/bin/mysql.exe\" -u root -e \"CREATE DATABASE IF NOT EXISTS whatsapp_monks CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;\")",
+      "Bash(\"C:/wamp64/bin/mysql/mysql9.1.0/bin/mysql.exe\" -u root -e \"CREATE DATABASE IF NOT EXISTS whatsapp_monks CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;\")",
+      "Bash(\"C:/wamp64/bin/mysql/mysql9.1.0/bin/mysql.exe\" -u root --port=3308 -e \"CREATE DATABASE IF NOT EXISTS whatsapp_monks CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;\")",
+      "Bash(\"C:/wamp64/bin/mysql/mysql9.1.0/bin/mysql.exe\" -u root --port=3307 -e \"CREATE DATABASE IF NOT EXISTS whatsapp_monks CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;\")",
+      "Bash(npx vite:*)",
+      "Bash(\"C:/wamp64/bin/mysql/mysql9.1.0/bin/mysql.exe\" -u root -e \"DROP DATABASE whatsapp_monks; CREATE DATABASE whatsapp_monks CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;\")",
+      "Bash(ls *.config.* *.ts vite.* tsconfig.*)"
+    ]
+  }
+}

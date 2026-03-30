@@ -5,6 +5,11 @@ use App\Http\Controllers\Client\DashboardController;
 use App\Http\Controllers\Client\SessionController;
 use App\Http\Controllers\Client\MessageController;
 use App\Http\Controllers\Client\InboxController;
+use App\Http\Controllers\Client\ContactController;
+use App\Http\Controllers\Client\ContactGroupController;
+use App\Http\Controllers\Client\WaGroupController;
+use App\Http\Controllers\Client\CampaignController;
+use App\Http\Controllers\Client\ChatbotController;
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\ClientManagementController;
 use App\Http\Controllers\Admin\PlanManagementController;
@@ -56,13 +61,43 @@ Route::middleware(['auth', 'verified', 'active'])->group(function () {
             Route::post('/{phone}/reply', [InboxController::class, 'reply'])->name('inbox.reply');
         });
 
+        // Contacts (M4)
+        Route::resource('contacts', ContactController::class)->except(['create', 'edit', 'show']);
+        Route::post('contacts/import', [ContactController::class, 'import'])->name('contacts.import');
+        Route::get('contacts/export', [ContactController::class, 'export'])->name('contacts.export');
+        Route::post('contacts/{contact}/opt-out', [ContactController::class, 'optOut'])->name('contacts.opt-out');
+        Route::post('contacts/bulk-action', [ContactController::class, 'bulkAction'])->name('contacts.bulk-action');
+
+        // Contact Groups (M4)
+        Route::resource('groups', ContactGroupController::class)->except(['create', 'edit']);
+        Route::post('groups/{group}/members', [ContactGroupController::class, 'addMembers'])->name('groups.add-members');
+        Route::delete('groups/{group}/members/{contact}', [ContactGroupController::class, 'removeMember'])->name('groups.remove-member');
+
+        // WA Groups (M4)
+        Route::prefix('wa-groups')->name('wa-groups.')->group(function () {
+            Route::get('/', [WaGroupController::class, 'index'])->name('index');
+            Route::post('/send', [WaGroupController::class, 'send'])->name('send');
+            Route::post('/extract-members', [WaGroupController::class, 'extractMembers'])->name('extract-members');
+            Route::post('/create', [WaGroupController::class, 'create'])->name('create');
+        });
+
+        // Campaigns (M5)
+        Route::resource('campaigns', CampaignController::class)->only(['index', 'store', 'show']);
+        Route::post('campaigns/{campaign}/pause', [CampaignController::class, 'pause'])->name('campaigns.pause');
+        Route::post('campaigns/{campaign}/resume', [CampaignController::class, 'resume'])->name('campaigns.resume');
+        Route::post('campaigns/{campaign}/cancel', [CampaignController::class, 'cancel'])->name('campaigns.cancel');
+        Route::get('campaigns/{campaign}/export', [CampaignController::class, 'export'])->name('campaigns.export');
+
+        // Chatbot (M6)
+        Route::resource('chatbot', ChatbotController::class)->except(['create', 'edit']);
+        Route::post('chatbot/{flow}/toggle', [ChatbotController::class, 'toggle'])->name('chatbot.toggle');
+        Route::post('chatbot/{flow}/nodes', [ChatbotController::class, 'addNode'])->name('chatbot.add-node');
+        Route::put('chatbot/{flow}/nodes/{node}', [ChatbotController::class, 'updateNode'])->name('chatbot.update-node');
+        Route::delete('chatbot/{flow}/nodes/{node}', [ChatbotController::class, 'deleteNode'])->name('chatbot.delete-node');
+        Route::post('chatbot/{flow}/nodes/reorder', [ChatbotController::class, 'reorderNodes'])->name('chatbot.reorder-nodes');
+
         // Placeholder routes (to be implemented in later milestones)
-        Route::get('/contacts', fn() => Inertia::render('Contacts/Index'))->name('contacts.index');
-        Route::get('/groups', fn() => Inertia::render('Groups/Index'))->name('groups.index');
-        Route::get('/campaigns', fn() => Inertia::render('Campaigns/Index'))->name('campaigns.index');
-        Route::get('/chatbot', fn() => Inertia::render('Chatbot/Index'))->name('chatbot.index');
         Route::get('/templates', fn() => Inertia::render('Templates/Index'))->name('templates.index');
-        Route::get('/wa-groups', fn() => Inertia::render('WaGroups/Index'))->name('wa-groups.index');
         Route::get('/api-keys', fn() => Inertia::render('ApiKeys/Index'))->name('api-keys.index');
         Route::get('/webhooks', fn() => Inertia::render('Webhooks/Index'))->name('webhooks.index');
         Route::get('/reports', fn() => Inertia::render('Reports/Index'))->name('reports.index');
