@@ -10,6 +10,10 @@ use App\Http\Controllers\Client\ContactGroupController;
 use App\Http\Controllers\Client\WaGroupController;
 use App\Http\Controllers\Client\CampaignController;
 use App\Http\Controllers\Client\ChatbotController;
+use App\Http\Controllers\Client\TemplateController;
+use App\Http\Controllers\Client\ApiKeyController;
+use App\Http\Controllers\Client\WebhookManagementController;
+use App\Http\Controllers\Client\SupportController;
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\ClientManagementController;
 use App\Http\Controllers\Admin\PlanManagementController;
@@ -96,13 +100,29 @@ Route::middleware(['auth', 'verified', 'active'])->group(function () {
         Route::delete('chatbot/{flow}/nodes/{node}', [ChatbotController::class, 'deleteNode'])->name('chatbot.delete-node');
         Route::post('chatbot/{flow}/nodes/reorder', [ChatbotController::class, 'reorderNodes'])->name('chatbot.reorder-nodes');
 
+        // Templates (M7)
+        Route::resource('templates', TemplateController::class)->except(['create', 'edit', 'show']);
+        Route::post('templates/{template}/preview', [TemplateController::class, 'preview'])->name('templates.preview');
+
+        // API Keys (M7)
+        Route::get('api-keys', [ApiKeyController::class, 'index'])->name('api-keys.index');
+        Route::post('api-keys/regenerate', [ApiKeyController::class, 'regenerate'])->name('api-keys.regenerate');
+        Route::post('api-keys/regenerate-secret', [ApiKeyController::class, 'regenerateSecret'])->name('api-keys.regenerate-secret');
+
+        // Webhooks Management (M7)
+        Route::resource('webhooks', WebhookManagementController::class)->except(['create', 'edit', 'show']);
+        Route::post('webhooks/{webhook}/test', [WebhookManagementController::class, 'test'])->name('webhooks.test');
+        Route::get('webhooks/{webhook}/logs', [WebhookManagementController::class, 'logs'])->name('webhooks.logs');
+
+        // Support (M7)
+        Route::get('support', [SupportController::class, 'index'])->name('support.index');
+        Route::post('support', [SupportController::class, 'store'])->name('support.store');
+        Route::get('support/{ticket}', [SupportController::class, 'show'])->name('support.show');
+        Route::post('support/{ticket}/reply', [SupportController::class, 'reply'])->name('support.reply');
+
         // Placeholder routes (to be implemented in later milestones)
-        Route::get('/templates', fn() => Inertia::render('Templates/Index'))->name('templates.index');
-        Route::get('/api-keys', fn() => Inertia::render('ApiKeys/Index'))->name('api-keys.index');
-        Route::get('/webhooks', fn() => Inertia::render('Webhooks/Index'))->name('webhooks.index');
         Route::get('/reports', fn() => Inertia::render('Reports/Index'))->name('reports.index');
         Route::get('/billing', fn() => Inertia::render('Billing/Index'))->name('billing.index');
-        Route::get('/support', fn() => Inertia::render('Support/Index'))->name('support.index');
     });
 });
 

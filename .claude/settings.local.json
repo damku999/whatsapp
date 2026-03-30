@@ -25,7 +25,8 @@
       "Bash(\"C:/wamp64/bin/mysql/mysql9.1.0/bin/mysql.exe\" -u root --port=3307 -e \"CREATE DATABASE IF NOT EXISTS whatsapp_monks CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;\")",
       "Bash(npx vite:*)",
       "Bash(\"C:/wamp64/bin/mysql/mysql9.1.0/bin/mysql.exe\" -u root -e \"DROP DATABASE whatsapp_monks; CREATE DATABASE whatsapp_monks CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;\")",
-      "Bash(ls *.config.* *.ts vite.* tsconfig.*)"
+      "Bash(ls *.config.* *.ts vite.* tsconfig.*)",
+      "Bash(ls resources/js/Pages/*/Index.tsx)"
     ]
   }
 }

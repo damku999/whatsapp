@@ -1,84 +1,68 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
 use App\Models\WebhookLog;
-use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Inertia\Inertia;
+use Inertia\Response;
 
-class WebhookController extends Controller
+class WebhookManagementController extends Controller
 {
     /**
-     * List all webhooks for the authenticated user.
+     * Display a listing of webhooks.
      */
-    public function index(Request $request): JsonResponse
+    public function index(Request $request): Response
     {
         $webhooks = $request->user()
             ->webhooks()
+            ->withCount('logs')
             ->orderBy('created_at', 'desc')
             ->get();
 
-        return response()->json([
-            'success' => true,
-            'data' => $webhooks,
-            'message' => 'Webhooks retrieved successfully.',
+        return Inertia::render('Webhooks/Index', [
+            'webhooks' => $webhooks,
+            'availableEvents' => $this->availableEvents(),
         ]);
     }
 
     /**
-     * Create a new webhook.
+     * Store a newly created webhook.
      */
-    public function store(Request $request): JsonResponse
+    public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
             'url' => 'required|url|max:2048',
             'events' => 'required|array|min:1',
-            'events.*' => 'string|in:message.received,message.sent,message.delivered,message.read,message.failed,session.connected,session.disconnected,campaign.completed,campaign.failed',
-            'is_active' => 'nullable|boolean',
+            'events.*' => 'string|in:' . implode(',', array_keys($this->availableEvents())),
         ]);
 
-        $webhook = $request->user()->webhooks()->create([
+        $request->user()->webhooks()->create([
             'url' => $validated['url'],
             'events_json' => $validated['events'],
             'secret' => bin2hex(random_bytes(32)),
-            'is_active' => $validated['is_active'] ?? true,
+            'is_active' => true,
         ]);
 
-        return response()->json([
-            'success' => true,
-            'data' => $webhook,
-            'message' => 'Webhook created successfully.',
-        ], 201);
+        return redirect()->route('webhooks.index')
+            ->with('success', 'Webhook created successfully.');
     }
 
     /**
-     * Show a single webhook.
+     * Update the specified webhook.
      */
-    public function show(Request $request, $id): JsonResponse
-    {
-        $webhook = $request->user()->webhooks()->findOrFail($id);
-
-        return response()->json([
-            'success' => true,
-            'data' => $webhook,
-            'message' => 'Webhook retrieved successfully.',
-        ]);
-    }
-
-    /**
-     * Update a webhook.
-     */
-    public function update(Request $request, $id): JsonResponse
+    public function update(Request $request, $id): RedirectResponse
     {
         $webhook = $request->user()->webhooks()->findOrFail($id);
 
         $validated = $request->validate([
             'url' => 'sometimes|required|url|max:2048',
             'events' => 'sometimes|required|array|min:1',
-            'events.*' => 'string|in:message.received,message.sent,message.delivered,message.read,message.failed,session.connected,session.disconnected,campaign.completed,campaign.failed',
+            'events.*' => 'string|in:' . implode(',', array_keys($this->availableEvents())),
             'is_active' => 'nullable|boolean',
         ]);
 
@@ -98,33 +82,27 @@ class WebhookController extends Controller
 
         $webhook->update($updateData);
 
-        return response()->json([
-            'success' => true,
-            'data' => $webhook->fresh(),
-            'message' => 'Webhook updated successfully.',
-        ]);
+        return redirect()->route('webhooks.index')
+            ->with('success', 'Webhook updated successfully.');
     }
 
     /**
-     * Delete a webhook.
+     * Remove the specified webhook.
      */
-    public function destroy(Request $request, $id): JsonResponse
+    public function destroy(Request $request, $id): RedirectResponse
     {
         $webhook = $request->user()->webhooks()->findOrFail($id);
         $webhook->logs()->delete();
         $webhook->delete();
 
-        return response()->json([
-            'success' => true,
-            'data' => null,
-            'message' => 'Webhook deleted successfully.',
-        ]);
+        return redirect()->route('webhooks.index')
+            ->with('success', 'Webhook deleted successfully.');
     }
 
     /**
-     * Send a test payload to the webhook URL.
+     * Send a test payload to the webhook.
      */
-    public function test(Request $request, $id): JsonResponse
+    public function test(Request $request, $id)
     {
         $webhook = $request->user()->webhooks()->findOrFail($id);
 
@@ -172,7 +150,6 @@ class WebhookController extends Controller
             'sent_at' => now(),
         ]);
 
-        // Update webhook metadata
         $webhook->update([
             'last_triggered_at' => now(),
             'last_response_code' => $responseCode,
@@ -180,15 +157,47 @@ class WebhookController extends Controller
 
         $isSuccessful = $responseCode >= 200 && $responseCode < 300;
 
-        return response()->json([
-            'success' => $isSuccessful,
-            'data' => [
-                'response_code' => $responseCode,
-                'delivered' => $isSuccessful,
-            ],
-            'message' => $isSuccessful
-                ? 'Test webhook delivered successfully.'
-                : 'Test webhook delivery failed with HTTP ' . $responseCode . '.',
+        if ($isSuccessful) {
+            return redirect()->route('webhooks.index')
+                ->with('success', 'Test webhook delivered successfully (HTTP ' . $responseCode . ').');
+        }
+
+        return redirect()->route('webhooks.index')
+            ->with('error', 'Test webhook delivery failed (HTTP ' . $responseCode . ').');
+    }
+
+    /**
+     * View delivery logs for a specific webhook.
+     */
+    public function logs(Request $request, $id): Response
+    {
+        $webhook = $request->user()->webhooks()->findOrFail($id);
+
+        $logs = $webhook->logs()
+            ->orderBy('sent_at', 'desc')
+            ->paginate(50);
+
+        return Inertia::render('Webhooks/Logs', [
+            'webhook' => $webhook,
+            'logs' => $logs,
         ]);
+    }
+
+    /**
+     * Get the list of available webhook events.
+     */
+    private function availableEvents(): array
+    {
+        return [
+            'message.received' => 'When a message is received',
+            'message.sent' => 'When a message is sent',
+            'message.delivered' => 'When a message is delivered',
+            'message.read' => 'When a message is read',
+            'message.failed' => 'When a message fails to send',
+            'session.connected' => 'When a session connects',
+            'session.disconnected' => 'When a session disconnects',
+            'campaign.completed' => 'When a campaign completes',
+            'campaign.failed' => 'When a campaign fails',
+        ];
     }
 }

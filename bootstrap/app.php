@@ -22,6 +22,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'client' => \App\Http\Middleware\EnsureUserIsClient::class,
             'active' => \App\Http\Middleware\EnsureUserIsActive::class,
             'api.key' => \App\Http\Middleware\ValidateApiKey::class,
+            'throttle.api' => \App\Http\Middleware\ApiRateLimiter::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
