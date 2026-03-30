@@ -10,6 +10,7 @@ use App\Http\Controllers\Client\ContactGroupController;
 use App\Http\Controllers\Client\WaGroupController;
 use App\Http\Controllers\Client\CampaignController;
 use App\Http\Controllers\Client\ChatbotController;
+use App\Http\Controllers\Client\BillingController;
 use App\Http\Controllers\Client\TemplateController;
 use App\Http\Controllers\Client\ApiKeyController;
 use App\Http\Controllers\Client\WebhookManagementController;
@@ -120,9 +121,20 @@ Route::middleware(['auth', 'verified', 'active'])->group(function () {
         Route::get('support/{ticket}', [SupportController::class, 'show'])->name('support.show');
         Route::post('support/{ticket}/reply', [SupportController::class, 'reply'])->name('support.reply');
 
+        // Billing (M8)
+        Route::prefix('billing')->name('billing.')->group(function () {
+            Route::get('/', [BillingController::class, 'index'])->name('index');
+            Route::post('/subscribe', [BillingController::class, 'subscribe'])->name('subscribe');
+            Route::post('/razorpay/verify', [BillingController::class, 'verifyRazorpay'])->name('razorpay.verify');
+            Route::post('/upi-payment', [BillingController::class, 'submitUpiPayment'])->name('upi-payment');
+            Route::post('/apply-coupon', [BillingController::class, 'applyCoupon'])->name('apply-coupon');
+            Route::get('/invoice/{transaction}', [BillingController::class, 'downloadInvoice'])->name('invoice');
+            Route::post('/upgrade', [BillingController::class, 'upgrade'])->name('upgrade');
+            Route::post('/cancel', [BillingController::class, 'cancelRenewal'])->name('cancel');
+        });
+
         // Placeholder routes (to be implemented in later milestones)
         Route::get('/reports', fn() => Inertia::render('Reports/Index'))->name('reports.index');
-        Route::get('/billing', fn() => Inertia::render('Billing/Index'))->name('billing.index');
     });
 });
 
