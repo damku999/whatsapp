@@ -15,8 +15,8 @@ class RazorpayService
 
     public function __construct()
     {
-        $this->keyId = config('services.razorpay.key', '');
-        $this->keySecret = config('services.razorpay.secret', '');
+        $this->keyId = config('services.razorpay.key') ?? '';
+        $this->keySecret = config('services.razorpay.secret') ?? '';
     }
 
     /**

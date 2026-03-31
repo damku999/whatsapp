@@ -9,7 +9,12 @@ interface Usage { messages_today: number; messages_limit: number; contacts_count
 
 interface Props { currentPlan: Subscription | null; usage: Usage; plans: Plan[]; transactions: { data: Transaction[] }; }
 
-export default function Billing({ currentPlan, usage, plans, transactions }: Props) {
+export default function Billing({ currentPlan, usage, plans: rawPlans, transactions: rawTransactions }: Props) {
+    const plans = Array.isArray(rawPlans) ? rawPlans : (rawPlans as any)?.data ?? [];
+    const transactions = typeof rawTransactions === 'object' && rawTransactions !== null && 'data' in rawTransactions
+        ? { ...rawTransactions, data: Array.isArray(rawTransactions.data) ? rawTransactions.data : [] }
+        : { data: Array.isArray(rawTransactions) ? rawTransactions : [] };
+
     const [showUpgrade, setShowUpgrade] = useState(false);
     const [showUpi, setShowUpi] = useState(false);
     const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');

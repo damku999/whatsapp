@@ -20,5 +20,18 @@ class AdminUserSeeder extends Seeder
                 'email_verified_at' => now(),
             ]
         );
+
+        User::updateOrCreate(
+            ['email' => 'client@whatsappmonks.com'],
+            [
+                'name' => 'Test Client',
+                'password' => Hash::make('client123456'),
+                'role' => 'client',
+                'status' => 'active',
+                'email_verified_at' => now(),
+                'company_name' => 'Demo Business',
+                'phone' => '919999999999',
+            ]
+        );
     }
 }

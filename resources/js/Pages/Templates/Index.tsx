@@ -13,7 +13,7 @@ interface Template {
 }
 
 interface Props {
-    templates: Template[];
+    templates: { data: Template[] } | Template[];
 }
 
 const messageTypeOptions = [
@@ -25,7 +25,8 @@ const messageTypeOptions = [
 
 const variables = ['{{name}}', '{{phone}}', '{{custom}}'];
 
-export default function TemplatesIndex({ templates }: Props) {
+export default function TemplatesIndex({ templates: rawTemplates }: Props) {
+    const templates = Array.isArray(rawTemplates) ? rawTemplates : (rawTemplates?.data ?? []);
     const [showModal, setShowModal] = useState(false);
     const [editingTemplate, setEditingTemplate] = useState<Template | null>(null);
     const [alert, setAlert] = useState<{ type: 'success' | 'error'; message: string } | null>(null);

@@ -26,7 +26,8 @@ const statusConfig: Record<string, { bg: string; text: string; label: string }> 
     scanning: { bg: 'bg-blue-100', text: 'text-blue-700', label: 'Scanning' },
 };
 
-export default function SessionsIndex({ sessions }: Props) {
+export default function SessionsIndex({ sessions: rawSessions }: Props) {
+    const sessions = Array.isArray(rawSessions) ? rawSessions : (rawSessions as any)?.data ?? [];
     const [showCreateModal, setShowCreateModal] = useState(false);
     const [scanningSessionId, setScanningSessionId] = useState<number | null>(null);
     const [qrData, setQrData] = useState<string | null>(null);

@@ -56,7 +56,8 @@ class SessionController extends Controller
         $user = $request->user();
 
         // Enforce plan session limit
-        $plan = $user->plan;
+        $subscription = $user->activeSubscription;
+        $plan = $subscription?->plan ?? $user->plan;
         $maxSessions = $plan?->max_sessions ?? 1;
         $currentCount = $user->waSessions()->count();
 
@@ -79,10 +80,11 @@ class SessionController extends Controller
         // Tell the engine to start the session
         $result = $this->engine->startSession($engineSessionId, $validated['auth_type']);
 
-        if (isset($result['success']) && $result['success'] === false) {
-            // Engine failed but we keep the DB record in pending state for retry
+        if (isset($result['error']) || (isset($result['success']) && $result['success'] === false)) {
+            // Engine failed — keep DB record in pending state for retry
+            $errorMsg = $result['error'] ?? 'Could not connect to WhatsApp Engine. Make sure it is running on port 3001.';
             return back()->withErrors([
-                'session_name' => 'Failed to start session on engine: ' . ($result['error'] ?? 'Unknown error'),
+                'session_name' => $errorMsg,
             ]);
         }
 

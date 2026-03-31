@@ -21,9 +21,12 @@ class SessionMonitorController extends Controller
     public function disconnect(WaSession $session)
     {
         try {
+            $engineUrl = config('services.wa_engine.url') ?? '';
+            $engineSecret = config('services.wa_engine.secret') ?? '';
+
             Http::withHeaders([
-                'X-Internal-Secret' => config('services.wa_engine.secret'),
-            ])->post(config('services.wa_engine.url') . '/session/' . $session->engine_session_id . '/disconnect');
+                'X-Internal-Secret' => $engineSecret,
+            ])->post(rtrim($engineUrl, '/') . '/session/' . $session->engine_session_id . '/disconnect');
 
             $session->update(['status' => 'disconnected']);
         } catch (\Exception $e) {

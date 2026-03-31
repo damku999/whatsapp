@@ -69,8 +69,8 @@ class InboxController extends Controller
 
         // Find the contact name if they exist in the contacts table
         $contact = $user->contacts()
-            ->where('phone_number', $phone)
-            ->first(['id', 'name', 'phone_number']);
+            ->where('phone', $phone)
+            ->first(['id', 'name', 'phone']);
 
         return Inertia::render('Inbox/Show', [
             'phone' => $phone,
@@ -196,7 +196,7 @@ class InboxController extends Controller
 
             // Try to find a contact name
             $contact = $user->contacts()
-                ->where('phone_number', $phone)
+                ->where('phone', $phone)
                 ->first(['name']);
 
             $conversations[] = [

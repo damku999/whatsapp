@@ -33,7 +33,12 @@ interface Props {
     allTags: string[];
 }
 
-export default function ContactsIndex({ contacts, filters, allTags }: Props) {
+export default function ContactsIndex({ contacts: rawContacts, filters, allTags: rawAllTags }: Props) {
+    const contacts: PaginatedContacts = rawContacts && typeof rawContacts === 'object' && 'data' in rawContacts
+        ? { ...rawContacts, data: Array.isArray(rawContacts.data) ? rawContacts.data : [] }
+        : { data: Array.isArray(rawContacts) ? rawContacts : [], current_page: 1, last_page: 1, per_page: 25, total: 0, links: [] };
+    const allTags = Array.isArray(rawAllTags) ? rawAllTags : (rawAllTags as any)?.data ?? [];
+
     const [showAddModal, setShowAddModal] = useState(false);
     const [showImportModal, setShowImportModal] = useState(false);
     const [showDetailPanel, setShowDetailPanel] = useState(false);

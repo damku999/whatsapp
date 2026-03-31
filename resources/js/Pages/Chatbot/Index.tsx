@@ -56,7 +56,10 @@ const triggerTypes = [
     { value: 'any', label: 'Any Message' },
 ];
 
-export default function ChatbotIndex({ flows, sessions }: Props) {
+export default function ChatbotIndex({ flows: rawFlows, sessions: rawSessions }: Props) {
+    const flows = Array.isArray(rawFlows) ? rawFlows : (rawFlows as any)?.data ?? [];
+    const sessions = Array.isArray(rawSessions) ? rawSessions : (rawSessions as any)?.data ?? [];
+
     const [showCreateModal, setShowCreateModal] = useState(false);
     const [editingFlow, setEditingFlow] = useState<ChatbotFlow | null>(null);
     const [showNodeModal, setShowNodeModal] = useState(false);

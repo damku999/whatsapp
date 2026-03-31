@@ -23,7 +23,7 @@ return new class extends Migration
             $table->integer('delay_max')->default(8);
             $table->timestamp('scheduled_at')->nullable();
             $table->enum('status', [
-                'draft', 'scheduled', 'running', 'paused', 'completed', 'cancelled',
+                'draft', 'pending', 'scheduled', 'running', 'paused', 'completed', 'cancelled', 'failed',
             ])->default('draft');
             $table->integer('total_count')->default(0);
             $table->integer('sent_count')->default(0);

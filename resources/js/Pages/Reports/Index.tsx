@@ -35,7 +35,13 @@ interface Props {
     days: number;
 }
 
-export default function Reports({ summary, messagesPerDay, campaigns, apiUsage, apiPerDay, topEndpoints, contactGrowth, failedMessages, days }: Props) {
+export default function Reports({ summary, messagesPerDay: rawMessagesPerDay, campaigns: rawCampaigns, apiUsage, apiPerDay, topEndpoints: rawTopEndpoints, contactGrowth: rawContactGrowth, failedMessages: rawFailedMessages, days }: Props) {
+    const messagesPerDay = Array.isArray(rawMessagesPerDay) ? rawMessagesPerDay : (rawMessagesPerDay as any)?.data ?? [];
+    const campaigns = Array.isArray(rawCampaigns) ? rawCampaigns : (rawCampaigns as any)?.data ?? [];
+    const topEndpoints = Array.isArray(rawTopEndpoints) ? rawTopEndpoints : (rawTopEndpoints as any)?.data ?? [];
+    const contactGrowth = Array.isArray(rawContactGrowth) ? rawContactGrowth : (rawContactGrowth as any)?.data ?? [];
+    const failedMessages = Array.isArray(rawFailedMessages) ? rawFailedMessages : (rawFailedMessages as any)?.data ?? [];
+
     const [selectedDays, setSelectedDays] = useState(days);
 
     const changePeriod = (d: number) => {

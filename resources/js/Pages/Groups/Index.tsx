@@ -23,7 +23,10 @@ interface Props {
     contacts: Contact[];
 }
 
-export default function GroupsIndex({ groups, contacts }: Props) {
+export default function GroupsIndex({ groups: rawGroups, contacts: rawContacts }: Props) {
+    const groups = Array.isArray(rawGroups) ? rawGroups : (rawGroups as any)?.data ?? [];
+    const contacts = Array.isArray(rawContacts) ? rawContacts : (rawContacts as any)?.data ?? [];
+
     const [showCreateModal, setShowCreateModal] = useState(false);
     const [showMembersModal, setShowMembersModal] = useState(false);
     const [showAddMemberModal, setShowAddMemberModal] = useState(false);

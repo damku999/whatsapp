@@ -45,7 +45,10 @@ const statusBadge: Record<string, string> = {
     pending: 'bg-yellow-100 text-yellow-700',
 };
 
-export default function MessagesIndex({ sessions, recentMessages, prefill }: Props) {
+export default function MessagesIndex({ sessions: rawSessions, recentMessages: rawRecentMessages, prefill }: Props) {
+    const sessions = Array.isArray(rawSessions) ? rawSessions : (rawSessions as any)?.data ?? [];
+    const recentMessages = Array.isArray(rawRecentMessages) ? rawRecentMessages : (rawRecentMessages as any)?.data ?? [];
+
     const [preview, setPreview] = useState<string | null>(null);
     const [dragActive, setDragActive] = useState(false);
     const [alert, setAlert] = useState<{ type: 'success' | 'error'; message: string } | null>(null);

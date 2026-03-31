@@ -13,8 +13,8 @@ class WhatsAppEngineService
 
     public function __construct()
     {
-        $this->baseUrl = rtrim(config('services.wa_engine.url'), '/');
-        $this->secret = config('services.wa_engine.secret');
+        $this->baseUrl = rtrim(config('services.wa_engine.url') ?? '', '/');
+        $this->secret = config('services.wa_engine.secret') ?? '';
         $this->timeout = 30;
     }
 

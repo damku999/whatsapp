@@ -35,7 +35,9 @@ const eventOptions = [
     { value: 'contact.opted_out', label: 'Contact Opted Out', description: 'When a contact opts out' },
 ];
 
-export default function WebhooksIndex({ webhooks }: Props) {
+export default function WebhooksIndex({ webhooks: rawWebhooks }: Props) {
+    const webhooks = Array.isArray(rawWebhooks) ? rawWebhooks : (rawWebhooks as any)?.data ?? [];
+
     const [showCreateModal, setShowCreateModal] = useState(false);
     const [showLogsModal, setShowLogsModal] = useState(false);
     const [selectedWebhook, setSelectedWebhook] = useState<Webhook | null>(null);

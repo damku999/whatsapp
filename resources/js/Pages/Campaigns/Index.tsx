@@ -73,7 +73,12 @@ const recipientStatus: Record<string, string> = {
     failed: 'bg-red-100 text-red-700',
 };
 
-export default function CampaignsIndex({ campaigns, sessions, groups, contacts, selectedCampaign }: Props) {
+export default function CampaignsIndex({ campaigns: rawCampaigns, sessions: rawSessions, groups: rawGroups, contacts: rawContacts, selectedCampaign }: Props) {
+    const campaigns = Array.isArray(rawCampaigns) ? rawCampaigns : (rawCampaigns as any)?.data ?? [];
+    const sessions = Array.isArray(rawSessions) ? rawSessions : (rawSessions as any)?.data ?? [];
+    const groups = Array.isArray(rawGroups) ? rawGroups : (rawGroups as any)?.data ?? [];
+    const contacts = Array.isArray(rawContacts) ? rawContacts : (rawContacts as any)?.data ?? [];
+
     const [showCreate, setShowCreate] = useState(false);
     const [showDetail, setShowDetail] = useState(!!selectedCampaign);
     const [viewCampaign, setViewCampaign] = useState<(Campaign & { recipients: Recipient[] }) | null>(selectedCampaign || null);

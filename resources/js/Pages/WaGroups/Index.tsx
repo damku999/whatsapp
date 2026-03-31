@@ -30,8 +30,12 @@ interface Props {
     contacts: Contact[];
 }
 
-export default function WaGroupsIndex({ groups, sessions, contacts }: Props) {
-    const [selectedSession, setSelectedSession] = useState<number | string>(sessions?.find((s) => s.status === 'active')?.id || '');
+export default function WaGroupsIndex({ groups: rawGroups, sessions: rawSessions, contacts: rawContacts }: Props) {
+    const groups = Array.isArray(rawGroups) ? rawGroups : (rawGroups as any)?.data ?? [];
+    const sessions = Array.isArray(rawSessions) ? rawSessions : (rawSessions as any)?.data ?? [];
+    const contacts = Array.isArray(rawContacts) ? rawContacts : (rawContacts as any)?.data ?? [];
+
+    const [selectedSession, setSelectedSession] = useState<number | string>(sessions?.find((s: any) => s.status === 'active')?.id || '');
     const [showSendModal, setShowSendModal] = useState(false);
     const [showCreateModal, setShowCreateModal] = useState(false);
     const [selectedGroup, setSelectedGroup] = useState<WaGroup | null>(null);

@@ -23,7 +23,7 @@ interface Ticket {
 }
 
 interface Props {
-    tickets: Ticket[];
+    tickets: { data: Ticket[] } | Ticket[];
     selectedTicket?: Ticket | null;
 }
 
@@ -40,7 +40,8 @@ const priorityConfig: Record<string, { color: string; label: string }> = {
     high: { color: 'text-red-600', label: 'High' },
 };
 
-export default function SupportIndex({ tickets, selectedTicket }: Props) {
+export default function SupportIndex({ tickets: rawTickets, selectedTicket }: Props) {
+    const tickets = Array.isArray(rawTickets) ? rawTickets : (rawTickets?.data ?? []);
     const [showNewModal, setShowNewModal] = useState(false);
     const [viewingTicket, setViewingTicket] = useState<Ticket | null>(selectedTicket || null);
     const [alert, setAlert] = useState<{ type: 'success' | 'error'; message: string } | null>(null);

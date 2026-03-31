@@ -32,7 +32,11 @@ interface Props {
     sessions: { id: number; name: string }[];
 }
 
-export default function InboxIndex({ conversations, activeConversation, messages, sessions }: Props) {
+export default function InboxIndex({ conversations: rawConversations, activeConversation, messages: rawMessages, sessions: rawSessions }: Props) {
+    const conversations = Array.isArray(rawConversations) ? rawConversations : (rawConversations as any)?.data ?? [];
+    const messages = Array.isArray(rawMessages) ? rawMessages : (rawMessages as any)?.data ?? [];
+    const sessions = Array.isArray(rawSessions) ? rawSessions : (rawSessions as any)?.data ?? [];
+
     const [search, setSearch] = useState('');
     const [selectedConversation, setSelectedConversation] = useState<Conversation | null>(activeConversation || null);
     const [showMobileChat, setShowMobileChat] = useState(false);

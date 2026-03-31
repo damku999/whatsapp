@@ -24,8 +24,9 @@ class WebhookController extends Controller
     {
         // Verify the internal secret
         $secret = $request->header('X-Internal-Secret');
+        $expectedSecret = config('services.wa_engine.secret') ?? '';
 
-        if ($secret !== config('services.wa_engine.secret')) {
+        if ($expectedSecret === '' || $secret !== $expectedSecret) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 

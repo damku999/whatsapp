@@ -26,7 +26,25 @@
       "Bash(npx vite:*)",
       "Bash(\"C:/wamp64/bin/mysql/mysql9.1.0/bin/mysql.exe\" -u root -e \"DROP DATABASE whatsapp_monks; CREATE DATABASE whatsapp_monks CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;\")",
       "Bash(ls *.config.* *.ts vite.* tsconfig.*)",
-      "Bash(ls resources/js/Pages/*/Index.tsx)"
+      "Bash(ls resources/js/Pages/*/Index.tsx)",
+      "Bash(ls app/Http/Controllers/*/*.php)",
+      "Bash(ls app/Models/*.php)",
+      "Bash(ls database/migrations/*.php)",
+      "Bash(ls app/Services/*.php)",
+      "mcp__sequential-thinking__sequentialthinking",
+      "Bash(php -l app/Services/WhatsAppEngineService.php)",
+      "Bash(php -l app/Services/ChatbotService.php)",
+      "Bash(php -l app/Services/InvoiceService.php)",
+      "Bash(php -l app/Services/RazorpayService.php)",
+      "Bash(php -l app/Http/Controllers/Client/BillingController.php)",
+      "Bash(php -l app/Http/Controllers/Client/CampaignController.php)",
+      "Bash(php -l app/Http/Controllers/Client/InboxController.php)",
+      "Bash(php -l app/Http/Controllers/Client/SupportController.php)",
+      "Bash(php -l app/Http/Controllers/Internal/WebhookController.php)",
+      "Bash(php -l app/Http/Controllers/Admin/SessionMonitorController.php)",
+      "Bash(php -l database/migrations/2026_03_31_000011_create_message_campaigns_table.php)",
+      "Bash(php -l database/migrations/2026_03_31_000012_create_campaign_recipients_table.php)",
+      "Bash(php -l database/migrations/2026_03_31_000022_create_support_tickets_table.php)"
     ]
   }
 }

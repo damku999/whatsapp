@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('subject');
-            $table->enum('status', ['open', 'in_progress', 'resolved', 'closed'])->default('open');
-            $table->enum('priority', ['low', 'medium', 'high'])->default('medium');
+            $table->enum('status', ['open', 'in_progress', 'awaiting_reply', 'resolved', 'closed'])->default('open');
+            $table->enum('priority', ['low', 'medium', 'high', 'urgent'])->default('medium');
             $table->timestamps();
         });
     }
